@@ -13,6 +13,7 @@ const gameSocket = (io) => {
           {
             socketId: socket.id,
             username,
+            symbol : "X"
           },
         ],
       };
@@ -26,6 +27,41 @@ const gameSocket = (io) => {
       console.log(`Room Created: ${roomCode}`);
 
       console.log(rooms);
+    });
+
+    socket.on("join-room", ({ roomCode, username }) => {
+      const room = rooms[roomCode];
+
+      if (!room) {
+        socket.emit("room-error", {
+          message: "Room not found.",
+        });
+
+        return;
+      }
+
+      if (room.players.length >= 2) {
+        socket.emit("room-error", {
+          message: "Room is Full.",
+        });
+
+        return;
+      }
+
+      room.players.push({
+        socketId: socket.id,
+        username,
+        symbol:"0"
+      });
+
+      socket.join(roomCode);
+
+      io.to(roomCode).emit("room-joined", {
+        roomCode,
+        players: room.players,
+      });
+
+      console.log(`Player joined ${roomCode}`);
     });
 
     socket.on("disconnect", () => {

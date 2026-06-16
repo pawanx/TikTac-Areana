@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { socket } from "../../socket/socket";
 import "./Dashboard.css";
@@ -6,9 +6,17 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [roomCode, setRoomCode] = useState("");
+  const [joinCode, setJoinCode] = useState("");
 
   const handleCreateRoom = () => {
     socket.emit("create-room", {
+      username: user.username,
+    });
+  };
+
+  const handleJoin = () => {
+    socket.emit("join-room", {
+      roomCode: joinCode,
       username: user.username,
     });
   };
@@ -26,9 +34,22 @@ const Dashboard = () => {
       setRoomCode(roomCode);
     });
 
+    socket.on("room-joined", ({ roomCode, players }) => {
+      console.log("Joined:", roomCode);
+
+      console.log(players);
+    });
+
+    socket.on("room-error", ({ message }) => {
+      alert(message);
+    });
+
     return () => {
       socket.off("connect");
       socket.off("room-created");
+      socket.off("room-joined");
+
+      socket.off("room-error");
     };
   }, []);
   return (
@@ -62,7 +83,14 @@ const Dashboard = () => {
             <h3>Join Room</h3>
             <p>Enter a room code to join a game.</p>
 
-            <button>Join</button>
+            <input
+              type="text"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}
+              placeholder="ABC123"
+            />
+
+            <button onClick={handleJoin}>Join</button>
           </div>
 
           <div className="action-card">
