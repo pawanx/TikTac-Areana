@@ -99,6 +99,24 @@
   cursor: pointer;
 }
 
+/* Room */
+.room-box {
+  margin-top: 20px;
+  padding: 20px;
+
+  background: #1e293b;
+  border-radius: 12px;
+
+  text-align: center;
+
+  font-size: 1.2rem;
+}
+
+.room-box strong {
+  margin-left: 10px;
+  color: #6366f1;
+}
+
 /* Stats */
 
 .stats-section {

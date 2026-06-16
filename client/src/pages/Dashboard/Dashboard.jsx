@@ -1,9 +1,36 @@
+import { useEffect,useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { socket } from "../../socket/socket";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
+  const [roomCode, setRoomCode] = useState("");
 
+  const handleCreateRoom = () => {
+    socket.emit("create-room", {
+      username: user.username,
+    });
+  };
+
+  useEffect(() => {
+    if (socket.connected) {
+      console.log("Already Connected:", socket.id);
+    }
+
+    socket.on("connect", () => {
+      console.log("Connected:", socket.id);
+    });
+
+    socket.on("room-created", ({ roomCode }) => {
+      setRoomCode(roomCode);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("room-created");
+    };
+  }, []);
   return (
     <div className="dashboard">
       <nav className="navbar">
@@ -12,53 +39,45 @@ const Dashboard = () => {
         <div className="nav-right">
           <span>{user?.username}</span>
 
-          <button
-            className="logout-btn"
-            onClick={logout}
-          >
+          <button className="logout-btn" onClick={logout}>
             Logout
           </button>
         </div>
       </nav>
 
       <main className="dashboard-content">
-        <h1>
-          Welcome Back, {user?.username} 👋
-        </h1>
+        <h1>Welcome Back, {user?.username} 👋</h1>
 
-        <p>
-          Ready for your next battle?
-        </p>
+        <p>Ready for your next battle?</p>
 
         <div className="action-cards">
           <div className="action-card">
             <h3>Create Room</h3>
-            <p>
-              Start a private game and invite
-              a friend.
-            </p>
+            <p>Start a private game and invite a friend.</p>
 
-            <button>Create</button>
+            <button onClick={handleCreateRoom}>Create</button>
           </div>
 
           <div className="action-card">
             <h3>Join Room</h3>
-            <p>
-              Enter a room code to join a game.
-            </p>
+            <p>Enter a room code to join a game.</p>
 
             <button>Join</button>
           </div>
 
           <div className="action-card">
             <h3>Quick Match</h3>
-            <p>
-              Find an opponent instantly.
-            </p>
+            <p>Find an opponent instantly.</p>
 
             <button>Play</button>
           </div>
         </div>
+
+        {roomCode && (
+          <div className="room-box">
+            Room Code: <strong>{roomCode}</strong>
+          </div>
+        )}
 
         <section className="stats-section">
           <div className="stat-card">
