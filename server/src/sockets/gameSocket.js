@@ -9,6 +9,8 @@ const gameSocket = (io) => {
       const roomCode = generateRoomCode();
 
       rooms[roomCode] = {
+        roomCode,
+        status : "waiting",
         players: [
           {
             socketId: socket.id,
@@ -16,6 +18,16 @@ const gameSocket = (io) => {
             symbol : "X"
           },
         ],
+
+        gameState : {
+          board : [
+            "","","",
+            "","","",
+            "","",""
+          ],
+          currentPlayer : "X",
+          winner : null
+        }
       };
 
       socket.join(roomCode);
@@ -51,14 +63,17 @@ const gameSocket = (io) => {
       room.players.push({
         socketId: socket.id,
         username,
-        symbol:"0"
+        symbol:"O"
       });
+
+      if (room.players.length === 2) {
+        room.status = "playing";
+      }
 
       socket.join(roomCode);
 
       io.to(roomCode).emit("room-joined", {
-        roomCode,
-        players: room.players,
+        room : rooms[roomCode]
       });
 
       console.log(`Player joined ${roomCode}`);

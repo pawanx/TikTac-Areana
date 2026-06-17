@@ -1,10 +1,12 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {useNavigate} from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext";
 import { socket } from "../../socket/socket";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate()
   const [roomCode, setRoomCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
@@ -34,10 +36,12 @@ const Dashboard = () => {
       setRoomCode(roomCode);
     });
 
-    socket.on("room-joined", ({ roomCode, players }) => {
-      console.log("Joined:", roomCode);
+    socket.on("room-joined", ({ room }) => {
+      console.log("Joined:", room.roomCode);
 
-      console.log(players);
+      console.log(room.players);
+
+      navigate(`/room/${room.roomCode}`, {state: room})
     });
 
     socket.on("room-error", ({ message }) => {

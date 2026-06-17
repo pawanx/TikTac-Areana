@@ -3,6 +3,7 @@ import { BrowserRouter,Routes,Route } from "react-router-dom"
 import Auth from "./pages/Auth/Auth"
 import ProtectedRoutes from "./routes/ProtectedRoutes"
 import Dashboard from "./pages/Dashboard/Dashboard"
+import GameRoom from "./pages/GameRoom/Gameroom.jsx"
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/auth" element={<Auth/>}/>
         <Route path="/dashboard" element={<ProtectedRoutes><Dashboard/></ProtectedRoutes>}/>
+        <Route path="/room/:roomCode" element={<ProtectedRoutes><GameRoom/></ProtectedRoutes>}/>
       </Routes>
     </BrowserRouter>
   )
