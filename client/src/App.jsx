@@ -9,6 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Auth/>}/>
         <Route path="/auth" element={<Auth/>}/>
         <Route path="/dashboard" element={<ProtectedRoutes><Dashboard/></ProtectedRoutes>}/>
         <Route path="/room/:roomCode" element={<ProtectedRoutes><GameRoom/></ProtectedRoutes>}/>
