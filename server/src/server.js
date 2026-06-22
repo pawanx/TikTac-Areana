@@ -15,10 +15,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL,
-];
+const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL];
 
 const io = new Server(server, {
   cors: {
@@ -36,6 +33,10 @@ app.use(
 );
 
 gameSocket(io);
+
+app.get("/", (req, res) => {
+  res.send("Server is running 🚀");
+});
 
 app.use("/api/auth", authRoutes);
 
