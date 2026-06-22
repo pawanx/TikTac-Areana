@@ -3,7 +3,7 @@ import { BrowserRouter,Routes,Route } from "react-router-dom"
 import Auth from "./pages/Auth/Auth"
 import ProtectedRoutes from "./routes/ProtectedRoutes"
 import Dashboard from "./pages/Dashboard/Dashboard"
-import GameRoom from "./pages/GameRoom/Gameroom.jsx"
+import GameRoom from "./pages/GameRoom/GamerRoom.jsx"
 
 function App() {
   return (
