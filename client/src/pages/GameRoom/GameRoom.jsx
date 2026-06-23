@@ -124,7 +124,15 @@ const GameRoom = () => {
             <p>Room Code: {room.roomCode}</p>
           </div>
 
-          <div className="room-status">Status: {room.status}</div>
+          <div className="header-actions">
+            <div className="room-status">
+              {room.status === "playing" ? "🟢 Playing" : "🟡 Waiting"}
+            </div>
+
+            <button className="leave-btn-header" onClick={handleLeaveRoom}>
+              🚪 Leave
+            </button>
+          </div>
         </div>
 
         <div className="players-section">
@@ -138,7 +146,10 @@ const GameRoom = () => {
               }`}
             >
               <h3>{player.username}</h3>
-              <span>{player.symbol}</span>
+
+              <span className={player.symbol === "X" ? "symbol-x" : "symbol-o"}>
+                {player.symbol}
+              </span>
             </div>
           ))}
         </div>
@@ -151,7 +162,9 @@ const GameRoom = () => {
               🎉 Winner: {room.gameState.winner}
             </div>
           ) : (
-            <h2>Turn : {room.gameState.currentPlayer}</h2>
+            <div className="turn-banner">
+              ⚡ Turn : {room.gameState.currentPlayer}
+            </div>
           )}
         </div>
 
@@ -165,9 +178,7 @@ const GameRoom = () => {
               🔄 Play Again
             </button>
 
-            <button className="leave-btn" onClick={handleLeaveRoom}>
-              🚪 Leave Room
-            </button>
+           
           </div>
         )}
       </div>

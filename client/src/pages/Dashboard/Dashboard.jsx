@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { socket } from "../../socket/socket";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [roomCode, setRoomCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
@@ -21,6 +21,11 @@ const Dashboard = () => {
       roomCode: joinCode,
       username: user.username,
     });
+  };
+
+  const copyRoomCode = async () => {
+    await navigator.clipboard.writeText(roomCode);
+    alert("Room code copied!");
   };
 
   useEffect(() => {
@@ -41,7 +46,7 @@ const Dashboard = () => {
 
       console.log(room.players);
 
-      navigate(`/room/${room.roomCode}`, {state: room})
+      navigate(`/room/${room.roomCode}`, { state: room });
     });
 
     socket.on("room-error", ({ message }) => {
@@ -87,14 +92,20 @@ const Dashboard = () => {
             <h3>Join Room</h3>
             <p>Enter a room code to join a game.</p>
 
-            <input
-              type="text"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value)}
-              placeholder="ABC123"
-            />
+            <div className="join-input-container">
+              <input
+                className="join-input"
+                type="text"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                placeholder="Enter Room Code"
+                maxLength={6}
+              />
 
-            <button onClick={handleJoin}>Join</button>
+              <button className="join-btn" onClick={handleJoin}>
+                Join
+              </button>
+            </div>
           </div>
 
           <div className="action-card">
@@ -107,7 +118,17 @@ const Dashboard = () => {
 
         {roomCode && (
           <div className="room-box">
-            Room Code: <strong>{roomCode}</strong>
+            <h3>🎮 Room Created</h3>
+
+            <div className="room-code-container">
+              <span>{roomCode}</span>
+
+              <button className="copy-btn" onClick={copyRoomCode}>
+                📋 Copy
+              </button>
+            </div>
+
+            <p>Share this code with your friend.</p>
           </div>
         )}
 

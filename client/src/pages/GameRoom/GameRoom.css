@@ -1,10 +1,50 @@
-.game-room {
-  min-height: 100vh;
-  background: teal;
-  color: white;
-  padding: 30px;
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
+.leave-btn-header {
+  background: #ef4444;
+
+  color: white;
+
+  border: none;
+
+  padding: 12px 22px;
+
+  border-radius: 15px;
+
+  font-size: 0.95rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.leave-btn-header:hover {
+  background: #dc2626;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.leave-btn-header:active {
+  transform: scale(0.97);
+}
+
+.game-room {
+  min-height: 100vh;
+
+  background: linear-gradient(135deg, #0f172a, teal);
+
+  color: white;
+
+  padding: 30px;
+}
 .room-header {
   display: flex;
   justify-content: space-between;
@@ -114,16 +154,26 @@
   margin-top: 30px;
 }
 
-.leave-btn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: 0.3s;
+.symbol-x {
+  color: #6366f1;
 }
 
-.leave-btn:hover {
-  background: #dc2626;
+.symbol-o {
+  color: #ec4899;
+}
+
+.turn-banner {
+  width: fit-content;
+
+  margin: auto;
+
+  padding: 15px 30px;
+
+  background: #1e293b;
+
+  border-radius: 15px;
+
+  font-size: 1.2rem;
+
+  margin-bottom: 30px;
 }
