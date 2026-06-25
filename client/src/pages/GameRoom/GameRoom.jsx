@@ -1,6 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { socket } from "../../socket/socket";
+import toast from "react-hot-toast"
 import Confetti from "react-confetti";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
@@ -36,12 +37,12 @@ const GameRoom = () => {
     console.log("Current player:", currentPlayer);
 
     if (room.gameState.currentPlayer !== currentPlayer.symbol) {
-      alert("Not your turn");
+      toast.error("Not your turn");
       return;
     }
 
     if (room.gameState.winner) {
-      alert("Game Over");
+      toast.error("Game Over");
       return;
     }
 
