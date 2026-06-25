@@ -14,7 +14,7 @@ const GameRoom = () => {
   const winnerAudio = new Audio(winner_sound);
   const navigate = useNavigate();
   const { width, height } = useWindowSize();
-  const { user } = useAuth();
+  const { user, fetchLatestUser } = useAuth();
   const location = useLocation();
   const { roomCode } = useParams();
 
@@ -58,11 +58,12 @@ const GameRoom = () => {
     });
   };
 
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = async() => {
     socket.emit("leave-room", {
       roomCode: room.roomCode,
       username: user.username,
     });
+    await fetchLatestUser();
 
     navigate("/dashboard");
   };
@@ -79,13 +80,24 @@ const GameRoom = () => {
       console.log(room);
       setRoom(room);
     });
-
-    socket.on("game-updated", ({ room }) => {
+    socket.on("game-updated", async({ room }) => {
       console.log("GAME UPDATED RECEIVED");
       console.log(room);
 
-      if (room.gameState.winner && room.gameState.winner !== "DRAW") {
+      const currentPlayer = room.players.find(
+        (player) => player.username === user.username,
+      );
+
+      if (
+        room.gameState.winner &&
+        room.gameState.winner !== "DRAW" &&
+        room.gameState.winner === currentPlayer?.symbol
+      ) {
         winnerAudio.play();
+      }
+
+      if (room.gameState.winner) {
+        await fetchLatestUser();
       }
 
       setRoom(room);
@@ -177,8 +189,6 @@ const GameRoom = () => {
             <button className="rematch-btn" onClick={handleRematch}>
               🔄 Play Again
             </button>
-
-           
           </div>
         )}
       </div>

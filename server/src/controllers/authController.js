@@ -53,34 +53,66 @@ export const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if(!isMatch){
-        return res.status(401).json({
-            success: false,
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
         message: "Invalid credentials.",
-        })
+      });
     }
 
-    const token = jwt.sign({
-        id : user._id
-    },process.env.JWT_SECRET, {expiresIn : "7h"});
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7h" },
+    );
 
     res.status(200).json({
-        success : true,
-        token,
-        message : "Login Success",
-        user : {
-            id : user._id,
-            username : user.username,
-            email : user.email
-        }
-    })
-
+      success: true,
+      token,
+      message: "Login Success",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        wins: user.wins,
+        losses: user.losses,
+        draws: user.draws,
+        gamesPlayed: user.gamesPlayed,
+        avatar: user.avatar,
+      },
+    });
   } catch (error) {
-    console.error(`Error While Login: ${error}`)
+    console.error(`Error While Login: ${error}`);
     res.status(500).json({
-        success : false,
-        message : error.message
-    })
+      success: false,
+      message: error.message,
+    });
   }
 };
 
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        wins: user.wins,
+        losses: user.losses,
+        draws: user.draws,
+        gamesPlayed: user.gamesPlayed,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

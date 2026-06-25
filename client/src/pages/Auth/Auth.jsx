@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"
 import "./Auth.css";
 import api from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
@@ -8,6 +9,7 @@ const Auth = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -22,6 +24,8 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true)
+
     try {
       if (isLogin) {
         const res = await api.post("/auth/login", {
@@ -31,8 +35,10 @@ const Auth = () => {
 
         login(res.data.user, res.data.token);
 
-        alert("Login Successful");
-        navigate("/dashboard")
+        toast.success("Login Successful...")
+        setTimeout(() => {
+  navigate("/dashboard");
+}, 1000);
       } else {
         await api.post("/auth/register", {
           username: formData.username,
@@ -40,21 +46,30 @@ const Auth = () => {
           password: formData.password,
         });
 
-        alert("Registration Successful");
+        toast.success("Registration Successful. Please Login with your credentials");
 
-        setIsLogin(true);
+        setTimeout(() => {
+  setIsLogin(true);
 
-        setFormData({
-          username: "",
-          email: "",
-          password: "",
-        });
+  setFormData({
+    username: "",
+    email: "",
+    password: "",
+  });
+}, 1000);
+
       }
     } catch (error) {
-        alert(
+      setFormData(prev => ({
+  ...prev,
+  password: ""
+}));
+        toast.error(
       error.response?.data?.message ||
       "Something went wrong"
     );
+    }finally{
+      setLoading(false)
     }
   };
   return (
@@ -143,9 +158,11 @@ const Auth = () => {
               onChange={handleChange}
             />
 
-            <button type="submit" className="submit-btn">
-              {isLogin ? "Login" : "Regsiter"}
-            </button>
+           <button type="submit" className="submit-btn" disabled={loading}>
+  {loading
+    ? (isLogin ? "Logging in..." : "Registering...")
+    : (isLogin ? "Login" : "Register")}
+</button>
           </form>
         </div>
       </div>

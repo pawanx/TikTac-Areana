@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { socket } from "../../socket/socket";
+import toast from "react-hot-toast";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -12,20 +13,40 @@ const Dashboard = () => {
 
   const handleCreateRoom = () => {
     socket.emit("create-room", {
+      userId: user.id,
       username: user.username,
     });
+
+   
   };
 
   const handleJoin = () => {
+    if (!joinCode.trim()) {
+      toast.error("Please enter room code");
+      return;
+    }
     socket.emit("join-room", {
       roomCode: joinCode,
+      userId: user.id,
       username: user.username,
     });
+
+    toast.loading("Joining room...", {
+      id: "join-room",
+    });
+  };
+
+  const handleLogout = () => {
+    logout();
+
+    toast.success("Logged out successfully");
+
+    navigate("/auth");
   };
 
   const copyRoomCode = async () => {
     await navigator.clipboard.writeText(roomCode);
-    alert("Room code copied!");
+    toast.success("Room Code copied.");
   };
 
   useEffect(() => {
@@ -39,10 +60,15 @@ const Dashboard = () => {
 
     socket.on("room-created", ({ roomCode }) => {
       setRoomCode(roomCode);
+      toast.success("Room created");
     });
 
     socket.on("room-joined", ({ room }) => {
       console.log("Joined:", room.roomCode);
+
+      toast.dismiss("join-room");
+
+      toast.success("Match Found!");
 
       console.log(room.players);
 
@@ -50,7 +76,9 @@ const Dashboard = () => {
     });
 
     socket.on("room-error", ({ message }) => {
-      alert(message);
+      toast.dismiss("join-room");
+
+      toast.error(message);
     });
 
     return () => {
@@ -69,7 +97,7 @@ const Dashboard = () => {
         <div className="nav-right">
           <span>{user?.username}</span>
 
-          <button className="logout-btn" onClick={logout}>
+          <button className="logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </div>
@@ -85,7 +113,7 @@ const Dashboard = () => {
             <h3>Create Room</h3>
             <p>Start a private game and invite a friend.</p>
 
-            <button onClick={handleCreateRoom}>Create</button>
+            <button onClick={handleCreateRoom}>{roomCode ? "Room Created" : "Create"}</button>
           </div>
 
           <div className="action-card">
@@ -134,17 +162,17 @@ const Dashboard = () => {
 
         <section className="stats-section">
           <div className="stat-card">
-            <h2>0</h2>
+            <h2>{user?.wins || 0}</h2>
             <p>Wins</p>
           </div>
 
           <div className="stat-card">
-            <h2>0</h2>
+            <h2>{user?.losses || 0}</h2>
             <p>Losses</p>
           </div>
 
           <div className="stat-card">
-            <h2>0</h2>
+            <h2>{user?.draws || 0}</h2>
             <p>Draws</p>
           </div>
         </section>

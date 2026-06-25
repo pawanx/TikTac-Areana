@@ -1,3 +1,4 @@
+import User from "../models/User.js";
 import generateRoomCode from "../utils/generateRoomCode.js";
 import checkWinner from "../utils/checkWinner.js";
 const rooms = {};
@@ -6,9 +7,12 @@ const gameSocket = (io) => {
   io.on("connection", (socket) => {
     console.log("User Connected", socket.id);
 
-    socket.on("create-room", ({ username }) => {
+    socket.on("create-room", ({ userId, username }) => {
       console.log("ALL ROOMS AFTER CREATE");
       console.log(rooms);
+      console.log("USER AFTER CREATE");
+      console.log(userId);
+      console.log(username);
       const roomCode = generateRoomCode();
 
       rooms[roomCode] = {
@@ -17,6 +21,7 @@ const gameSocket = (io) => {
         players: [
           {
             socketId: socket.id,
+            userId,
             username,
             symbol: "X",
           },
@@ -40,8 +45,11 @@ const gameSocket = (io) => {
       console.log(rooms);
     });
 
-    socket.on("join-room", ({ roomCode, username }) => {
+    socket.on("join-room", ({ roomCode, userId, username }) => {
       const room = rooms[roomCode];
+      console.log("USER AAAAFTER JOIN")
+      console.log(userId);
+      console.log(username);
 
       if (!room) {
         socket.emit("room-error", {
@@ -61,6 +69,7 @@ const gameSocket = (io) => {
 
       room.players.push({
         socketId: socket.id,
+        userId,
         username,
         symbol: "O",
       });
@@ -78,9 +87,7 @@ const gameSocket = (io) => {
       console.log(`Player joined ${roomCode}`);
     });
 
-    socket.on("make-move", ({ roomCode, index, symbol }) => {
-      console.log("MOVE RECEIVED");
-      console.log("ALL ROOMS DURING MOVE");
+    socket.on("make-move", async ({ roomCode, index, symbol }) => {
       console.log(rooms);
 
       const room = rooms[roomCode];
@@ -115,10 +122,57 @@ const gameSocket = (io) => {
 
       const winner = checkWinner(board);
 
+      console.log("Winner:", winner);
+console.log("Current winner field:", room.gameState.winner);
+
       if (winner) {
+        console.log("ENTERED WIN BLOCK");
         room.gameState.winner = winner;
+
+        const winnerPlayer = room.players.find(
+          (player) => player.symbol === winner,
+        );
+
+        const loserPlayer = room.players.find(
+          (player) => player.symbol !== winner,
+        );
+
+        console.log("Winner Player:", winnerPlayer);
+        console.log("Loser Player:", loserPlayer);
+
+        console.log("Winner ID:", winnerPlayer.userId);
+        console.log("Loser ID:", loserPlayer.userId);
+
+        await User.findByIdAndUpdate(winnerPlayer.userId, {
+          $inc: {
+            wins: 1,
+            gamesPlayed: 1,
+          },
+        });
+
+        await User.findByIdAndUpdate(loserPlayer.userId, {
+          $inc: {
+            losses: 1,
+            gamesPlayed: 1,
+          },
+        });
       } else if (board.every((cell) => cell !== "")) {
         room.gameState.winner = "DRAW";
+
+        await User.findByIdAndUpdate(room.players[0].userId, {
+          $inc: {
+            draws: 1,
+            gamesPlayed: 1,
+          },
+        });
+
+        await User.findByIdAndUpdate(room.players[1].userId, {
+          $inc: {
+            draws: 1,
+            gamesPlayed: 1,
+          },
+        });
+        console.log("DB UPDATED");
       } else {
         room.gameState.currentPlayer = symbol === "X" ? "O" : "X";
       }
@@ -153,6 +207,7 @@ const gameSocket = (io) => {
     });
 
     socket.on("rematch", ({ roomCode }) => {
+      console.log("REMATCH");
       const room = rooms[roomCode];
 
       if (!room) return;
