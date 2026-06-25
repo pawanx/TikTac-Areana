@@ -4,6 +4,11 @@
   color: white;
 }
 
+.navbar-logo {
+  font-size: 2rem;
+  user-select: none;
+}
+
 /* Navbar */
 
 .navbar {
@@ -210,7 +215,8 @@
   display: flex;
   gap: 12px;
   margin-top: 20px;
-  align-items:center; 
+  align-items: center;
+  width: 100%;
 }
 
 .join-input {
@@ -233,6 +239,7 @@
   letter-spacing: 2px;
 
   transition: 0.3s;
+  min-width: 0;
 }
 
 .join-input::placeholder {
@@ -246,7 +253,10 @@
 }
 
 .join-btn {
-  
+  flex-shrink: 0;
+
+  width: 110px;
+  padding: 14px 0;
   background: #6366f1;
 
   color: white;
@@ -264,4 +274,91 @@
 
 .join-btn:hover {
   background: #4f46e5;
+}
+
+/* rESPONSIVE */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .nav-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-content {
+    padding: 24px 16px;
+  }
+
+  .dashboard-content h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .dashboard-content > p {
+    font-size: 1rem;
+  }
+
+  .action-cards,
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .action-card {
+    padding: 20px;
+  }
+
+  .join-input-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .join-input {
+    width: 100%;
+  }
+
+  .join-btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .room-box {
+    padding: 20px;
+  }
+
+  .room-code-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .room-code-container span {
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    padding: 14px;
+  }
+
+  .copy-btn {
+    width: 100%;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-card h2 {
+    font-size: 1.8rem;
+  }
+}
+
+/* DISABLE BUTTON */
+.action-card > button:disabled {
+  background: #22c55e;
+  cursor: not-allowed;
+  opacity: 0.9;
 }

@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { socket } from "../../socket/socket";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import Confetti from "react-confetti";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useNavigate } from "react-router-dom";
@@ -59,7 +59,7 @@ const GameRoom = () => {
     });
   };
 
-  const handleLeaveRoom = async() => {
+  const handleLeaveRoom = async () => {
     socket.emit("leave-room", {
       roomCode: room.roomCode,
       username: user.username,
@@ -81,7 +81,7 @@ const GameRoom = () => {
       console.log(room);
       setRoom(room);
     });
-    socket.on("game-updated", async({ room }) => {
+    socket.on("game-updated", async ({ room }) => {
       console.log("GAME UPDATED RECEIVED");
       console.log(room);
 
@@ -133,7 +133,7 @@ const GameRoom = () => {
       <div className="game-room">
         <div className="room-header">
           <div>
-            <h1>Tic Tac Arena</h1>
+            <div className="game-logo">✖️⭕</div>
             <p>Room Code: {room.roomCode}</p>
           </div>
 

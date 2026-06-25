@@ -16,8 +16,6 @@ const Dashboard = () => {
       userId: user.id,
       username: user.username,
     });
-
-   
   };
 
   const handleJoin = () => {
@@ -92,7 +90,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <nav className="navbar">
-        <h2>TicTac Arena</h2>
+        <div className="navbar-logo">✖️⭕</div>
 
         <div className="nav-right">
           <span>{user?.username}</span>
@@ -113,7 +111,9 @@ const Dashboard = () => {
             <h3>Create Room</h3>
             <p>Start a private game and invite a friend.</p>
 
-            <button onClick={handleCreateRoom}>{roomCode ? "Room Created" : "Create"}</button>
+            <button onClick={handleCreateRoom} disabled={roomCode}>
+              {roomCode ? "Room Created" : "Create"}
+            </button>
           </div>
 
           <div className="action-card">

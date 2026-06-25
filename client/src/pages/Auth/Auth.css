@@ -5,9 +5,22 @@
   color: white;
 }
 
-.logo-circle {
-  width: 80px;
-  height: 80px;
+.top-logo {
+  position: fixed;
+  top: 25px;
+  left: 35px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  z-index: 100;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+
   border-radius: 50%;
 
   display: flex;
@@ -16,8 +29,12 @@
 
   background: rgba(255, 255, 255, 0.1);
 
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.top-logo h2 {
+  color: white;
+  font-size: 1.6rem;
 }
 
 .auth-left {
@@ -26,7 +43,7 @@
   flex-direction: column; /* Stacks elements vertically */
   justify-content: center; /* Centers them vertically */
   align-items: flex-start; /* Aligns content nicely to the left */
-  padding: 40px;
+  padding: 60px;
 }
 
 .auth-branding {
@@ -45,10 +62,20 @@
   margin-bottom: 10px;
 }
 
+.hero-description {
+  max-width: 520px;
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
 .feature-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 16px;
+  margin-bottom: 40px;
 }
 
 .feature-item {
@@ -60,7 +87,7 @@
 /* BOARD PREVIEW */
 
 .board-preview {
-  margin-top: 3rem;
+  margin-top: 20px;
 
   display: grid;
   grid-template-columns: repeat(3, 70px);
@@ -104,6 +131,11 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* Darkened shadow for white background visibility */
   border: 1px solid #e2e8f0;
   backdrop-filter: blur(10px);
+  transition: 0.35s;
+}
+
+.auth-card:hover {
+  transform: translateY(-6px);
 }
 
 .auth-card h2 {
@@ -195,25 +227,40 @@ form input:focus {
 /* RESPONSIVE */
 
 @media (max-width: 900px) {
+
   .auth-container {
-    flex-direction: column;
-  }
-
-  .auth-left {
-    padding: 2rem;
-    text-align: center;
-  }
-
-  .branding h1 {
-    font-size: 2.8rem;
-  }
-
-  .feature-list {
-    align-items: center;
-  }
-
-  .board-preview {
+    display: flex;
     justify-content: center;
-    margin-inline: auto;
+    align-items: center;
+    padding: 100px 20px 30px;
+  }
+
+  /* Hide left hero section */
+  .auth-left {
+    display: none;
+  }
+
+  /* Keep only login card */
+  .auth-right {
+    flex: none;
+    width: 100%;
+    padding: 0;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* Center logo */
+  .top-logo {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+  }
+
+  .top-logo h2 {
+    font-size: 1.5rem;
   }
 }

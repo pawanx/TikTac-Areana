@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import "./Auth.css";
 import api from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
@@ -24,7 +24,7 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       if (isLogin) {
@@ -35,10 +35,10 @@ const Auth = () => {
 
         login(res.data.user, res.data.token);
 
-        toast.success("Login Successful...")
+        toast.success("Login Successful...");
         setTimeout(() => {
-  navigate("/dashboard");
-}, 1000);
+          navigate("/dashboard");
+        }, 1000);
       } else {
         await api.post("/auth/register", {
           username: formData.username,
@@ -46,44 +46,42 @@ const Auth = () => {
           password: formData.password,
         });
 
-        toast.success("Registration Successful. Please Login with your credentials");
+        toast.success(
+          "Registration Successful. Please Login with your credentials",
+        );
 
         setTimeout(() => {
-  setIsLogin(true);
+          setIsLogin(true);
 
-  setFormData({
-    username: "",
-    email: "",
-    password: "",
-  });
-}, 1000);
-
+          setFormData({
+            username: "",
+            email: "",
+            password: "",
+          });
+        }, 1000);
       }
     } catch (error) {
-      setFormData(prev => ({
-  ...prev,
-  password: ""
-}));
-        toast.error(
-      error.response?.data?.message ||
-      "Something went wrong"
-    );
-    }finally{
-      setLoading(false)
+      setFormData((prev) => ({
+        ...prev,
+        password: "",
+      }));
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <div className="auth-container">
+      <div className="top-logo">
+        <span className="logo-icon">✖️⭕</span>
+        <h2>TicTac Arena</h2>
+      </div>
       <div className="auth-left">
-        <div className="logo-circle">✖️⭕</div>
-        <div className="auth-branding">
-          <h1>Tic Tak Arena</h1>
-        </div>
+        
 
-        <p>
-          {" "}
-          Challenge players around the world in real-time multiplayer
-          Tic-Tac-Toe battles.
+        <p className="hero-description">
+          Challenge friends, climb the leaderboard, and become the ultimate
+          TicTac Arena champion.
         </p>
 
         <div className="feature-list">
@@ -158,11 +156,15 @@ const Auth = () => {
               onChange={handleChange}
             />
 
-           <button type="submit" className="submit-btn" disabled={loading}>
-  {loading
-    ? (isLogin ? "Logging in..." : "Registering...")
-    : (isLogin ? "Login" : "Register")}
-</button>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading
+                ? isLogin
+                  ? "Logging in..."
+                  : "Registering..."
+                : isLogin
+                  ? "Login"
+                  : "Register"}
+            </button>
           </form>
         </div>
       </div>
